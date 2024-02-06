@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Data Extractor",
+  "description": "Extracts the data from the Website",
+  "version": "1.0",
+  "icons": {
+    "16": "icon2.png",
+    "48": "icon2.png",
+    "128": "icon2.png"
+  },
+  "action": {
+    "default_icon": "icon2.png",
+    "default_title": "Data Extractor",
+    "default_popup": "popup/popup.html"
+  },
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>", "file:///"],
+      "css": ["contentScript.css"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
