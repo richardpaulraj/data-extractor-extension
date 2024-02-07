@@ -1,11 +1,7 @@
-// chrome.storage.get(['links'], (res) => {})
-
+// Listen for messages from the popup script
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  console.log(msg)
-  console.log(sender)
-  console.log(sendResponse)
-
-  if (msg) {
-    chrome.runtime.sendMessage(msg)
-  }
+  // Forward messages to the active tab
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, msg)
+  })
 })

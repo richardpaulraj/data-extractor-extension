@@ -1,7 +1,58 @@
 body {
-  width: 500px;
-  height: 500px;
-  background-color: bisque;
+  width: 350px;
+  height: 100px;
+  background-color: rgb(240 255 255);
 }
 #main {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+#getLinks {
+  width: 100%;
+  font-size: 20px;
+  /* background-color: white;
+  border: 1px solid aliceblue; */
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  /* height: 20px; */
+}
+
+#buttonsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+#buttonsContainer > * {
+  width: 100%;
+  font-size: 16px;
+  margin: 10px;
+}
+.bookmarkIcon {
+  margin-right: 5px;
+  height: 18px;
+  cursor: pointer;
+}
+.bookmarkIcon:hover {
+  transform: scale(1.25);
+}
+li {
+  margin: 5px 0;
+}
+li > a {
+  white-space: nowrap;
+}
+.bookmarkLinkContainer {
+  display: flex;
+  align-items: center;
+}
+.bookmarkLinkContainer > a {
+  text-decoration: none;
+}
+ol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#linkCount {
+  font-weight: bold;
+  margin: 10px;
 }

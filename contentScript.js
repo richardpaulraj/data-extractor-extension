@@ -1,14 +1,16 @@
-const links = []
+// chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+//   if (msg && msg.action === 'fetchLinks') {
+//     fetchLinks()
+//   }
+// })
 
-const aTags = document.getElementsByTagName('a')
-for (const tag of aTags) {
-  links.push(tag.href)
-}
+// function fetchLinks() {
+//   const links = []
 
-chrome.storage.local.set({
-  links,
-})
+//   const aTags = document.getElementsByTagName('a')
+//   for (const tag of aTags) {
+//     links.push(tag.href)
+//   }
 
-chrome.runtime.sendMessage(null, links)
-
-console.log(links)
+//   chrome.runtime.sendMessage({ links: links })
+// }

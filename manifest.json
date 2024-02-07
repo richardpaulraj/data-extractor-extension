@@ -13,15 +13,18 @@
     "default_title": "Data Extractor",
     "default_popup": "popup/popup.html"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "activeTab", "tabs", "scripting"],
+
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>", "file:///"],
+
       "css": ["contentScript.css"],
       "js": ["contentScript.js"]
     }
-  ]
+  ],
+  "options_page": "options/options.html"
 }
