@@ -48,3 +48,13 @@ li > a {
 li {
   margin: 5px 0;
 }
+.clearAllBtn {
+  background-color: red;
+  color: white;
+  border: none;
+  font-size: 18px;
+  padding: 8px;
+  cursor: pointer;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
