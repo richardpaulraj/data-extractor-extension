@@ -32,22 +32,23 @@ body {
   background-color: rgba(0, 0, 0, 0.103);
   padding: 10px 0;
   font-weight: 500;
+  position: relative;
 }
-li > a {
+div > a {
   color: black;
   text-decoration: none;
   font-size: 16px;
-  white-space: nowrap;
+  white-space: nowrap !important;
+  margin-left: 10px;
 }
 #savedLinks {
   padding: 10px;
   /* word-wrap: break-word; */
   overflow-y: auto;
   max-height: 340px;
+  height: 100%;
 }
-li {
-  margin: 5px 0;
-}
+
 .clearAllBtn {
   background-color: red;
   color: white;
@@ -57,4 +58,30 @@ li {
   cursor: pointer;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
+  display: none;
+}
+#bookmarkClearAll {
+  position: absolute;
+  text-align: start;
+  width: 100%;
+}
+.cancelEachBookmark {
+  color: red;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  position: relative;
+  top: -2px;
+}
+.cancelEachBookmark:hover {
+  transform: scale(1.3);
+}
+.cancelAndLinkContainer {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+a:hover {
+  background-color: rgba(0, 0, 0, 0.123);
 }

@@ -3,23 +3,6 @@ const getLinks = document.getElementById('getLinks')
 const linkCount = document.getElementById('linkCount')
 const buttonsContainer = document.getElementById('buttonsContainer')
 
-// getLinks.addEventListener('click', () => {
-//   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//     chrome.tabs.sendMessage(tabs[0].id, { action: 'fetchLinks' })
-//   })
-// })
-
-getLinks.addEventListener('click', () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    // if (tabs && tabs.length > 0 && tabs[0].id) {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      function: injectContentScript,
-    })
-    // }
-  })
-})
-
 function injectContentScript() {
   const links = []
 
@@ -30,6 +13,15 @@ function injectContentScript() {
 
   chrome.runtime.sendMessage({ links: links })
 }
+
+getLinks.addEventListener('click', () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.scripting.executeScript({
+      target: { tabId: tabs[0].id },
+      function: injectContentScript,
+    })
+  })
+})
 
 // Handle messages from the background script
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
@@ -61,11 +53,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           bookmarkIconFlag = !bookmarkIconFlag
           if (bookmarkIconFlag) {
             bookmarkIcon.src = '../bookmark.svg'
-            // chrome.storage.local.get('bookmarkedLinks', (e) => {
-            //   let bookmarkedLinks = e.bookmarkedLinks || []
-            //   bookmarkedLinks.push(link)
-            //   chrome.storage.local.set({ bookmarkedLinks: bookmarkedLinks })
-            // })
+
             chrome.storage.local.get('bookmarkedLinks', (e) => {
               let bookmarkedLinks = e.bookmarkedLinks || []
               bookmarkedLinks = bookmarkedLinks.filter(
@@ -77,13 +65,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             })
           } else {
             bookmarkIcon.src = '../bookmarkSelected.svg'
-            // chrome.storage.local.get('bookmarkedLinks', (e) => {
-            //   let bookmarkedLinks = e.bookmarkedLinks || []
-            //   bookmarkedLinks = bookmarkedLinks.filter(
-            //     (bookmark) => bookmark !== link
-            //   )
-            //   chrome.storage.local.set({ bookmarkedLinks: bookmarkedLinks })
-            // })
 
             chrome.storage.local.get('bookmarkedLinks', (e) => {
               let bookmarkedLinks = e.bookmarkedLinks || []
@@ -95,11 +76,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           }
         })
         bookmarkLinkContainer.classList.add('bookmarkLinkContainer')
-
-        // li.appendChild(bookmarkIcon) // Append button to the list item
-        // li.appendChild(a)
-
-        // ol.appendChild(li)
 
         bookmarkLinkContainer.appendChild(bookmarkIcon) // Append button to the list item
         bookmarkLinkContainer.appendChild(a)
@@ -115,8 +91,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 })
 
 let copyBtn
-let bookmarkBtn
+
 function displayButtons(links) {
+  buttonsContainer.innerHTML = ''
   getLinks.style.display = 'none'
   //Copy to Clipboard button
   copyBtn = document.createElement('button')
@@ -128,12 +105,10 @@ function displayButtons(links) {
   buttonsContainer.appendChild(copyBtn)
 
   //Bookmark Button
-  bookmarkBtn = document.createElement('button')
+  const bookmarkBtn = document.createElement('button')
   bookmarkBtn.textContent = "Bookmark's"
   bookmarkBtn.classList.add('bookmarkBtn')
-  bookmarkBtn.addEventListener('click', () => {
-    bookmarkLinks(links)
-  })
+
   buttonsContainer.appendChild(bookmarkBtn)
 
   bookmarkBtn.addEventListener('click', () => {
@@ -143,13 +118,7 @@ function displayButtons(links) {
 
 function copyToClipboard(links) {
   const linkText = links.join('\n')
-  console.log(links)
-  navigator.clipboard.writeText(linkText).then(
-    () => (copyBtn.textContent = 'Copied :)'),
-    (error) => {
-      console.error('Failed to copy links to clipboard:', error)
-    }
-  )
+  navigator.clipboard
+    .writeText(linkText)
+    .then(() => (copyBtn.textContent = 'Copied :)'))
 }
-
-function bookmarkLinks(links) {}
