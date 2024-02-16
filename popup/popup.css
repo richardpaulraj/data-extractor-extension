@@ -1,5 +1,10 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 body {
-  width: 350px;
+  min-width: 350px;
   height: 100px;
   background-color: rgb(240 255 255);
 }
@@ -8,13 +13,21 @@ body {
   overflow-y: auto;
 }
 
-#getLinks {
+#openingButtons {
+  display: flex;
+}
+#openingButtons > *,
+.copyBtn,
+.bookmarkBtn {
+  margin: 10px;
   width: 100%;
   font-size: 20px;
-  /* background-color: white;
-  border: 1px solid aliceblue; */
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-  /* height: 20px; */
+  color: black;
+  border: none;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  cursor: pointer;
+  padding: 5px;
 }
 
 #buttonsContainer {
@@ -51,6 +64,8 @@ ol {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-left: 40px;
+  margin-bottom: 10px;
 }
 #linkCount {
   font-weight: bold;
