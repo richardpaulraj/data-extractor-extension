@@ -1,10 +1,11 @@
 const ol = document.getElementById('ol')
 const getLinks = document.getElementById('getLinks')
 const getEmails = document.getElementById('getEmails')
-const linkCount = document.getElementById('linkCount')
-const buttonsContainer = document.getElementById('buttonsContainer')
+const linksCounter = document.getElementById('linksCounter')
+const innerButtons = document.getElementById('innerButtons')
+const nameWrapper = document.getElementById('myNameWrapper')
 
-function injectContentScript() {
+function injectContentScriptForLinks() {
   const links = []
 
   const aTags = document.getElementsByTagName('a')
@@ -12,21 +13,21 @@ function injectContentScript() {
     links.push(tag.href)
   }
 
-  chrome.runtime.sendMessage({ links: links, type: 'links' })
+  chrome.runtime.sendMessage({ links: links })
 }
 function injectContentScriptForEmails() {
   const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
   const bodyText = document.body.innerText
   const emailMatches = bodyText.matchAll(emailRegex)
   const extractedEmails = Array.from(emailMatches).map((match) => match[0])
-  chrome.runtime.sendMessage({ emails: extractedEmails, type: 'emails' })
+  chrome.runtime.sendMessage({ emails: extractedEmails })
 }
 
 getLinks.addEventListener('click', () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.scripting.executeScript({
       target: { tabId: tabs[0].id },
-      function: injectContentScript,
+      function: injectContentScriptForLinks,
     })
   })
 })
@@ -43,12 +44,13 @@ getEmails.addEventListener('click', () => {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg && Array.isArray(msg)) {
     // Clear existing list items
+
     ol.innerHTML = ''
 
     //copying to clipboard
     displayButtons(msg)
     // Iterate over the array of links and create list items
-    let linkCounter = 0
+    let counter = 0
     msg.forEach((link) => {
       if (link !== '') {
         let bookmarkIconFlag = true
@@ -62,13 +64,14 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         a.href = link
         a.target = '_blank'
         a.style.color = 'black'
-        bookmarkIcon.src = '../bookmark.svg'
+        a.classList.add('linksATag')
+        bookmarkIcon.src = '../icons/bookmark.svg'
         bookmarkIcon.classList.add('bookmarkIcon')
         bookmarkIcon.addEventListener('click', () => {
           // Button click event handler
           bookmarkIconFlag = !bookmarkIconFlag
           if (bookmarkIconFlag) {
-            bookmarkIcon.src = '../bookmark.svg'
+            bookmarkIcon.src = '../icons/bookmark.svg'
 
             chrome.storage.local.get('bookmarkedLinks', (e) => {
               let bookmarkedLinks = e.bookmarkedLinks || []
@@ -80,7 +83,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
               })
             })
           } else {
-            bookmarkIcon.src = '../bookmarkSelected.svg'
+            bookmarkIcon.src = '../icons/bookmarkSelected.svg'
 
             chrome.storage.local.get('bookmarkedLinks', (e) => {
               let bookmarkedLinks = e.bookmarkedLinks || []
@@ -98,18 +101,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         li.appendChild(bookmarkLinkContainer)
         ol.appendChild(li)
 
-        linkCounter++
+        counter++
       }
     })
-
-    console.log(msg)
-
-    if (msg.type === 'links') {
-      linkCount.textContent = `Total Links : ${linkCounter}`
-      console.log('links')
-    } else if (msg.type === 'emails') {
-      linkCount.textContent = `Total Links : ${linkCounter}`
-      console.log('emails')
+    if (counter === 0) {
+      linksCounter.textContent = `Sorry, no data found.`
+    } else if (msg.some((item) => item.includes('@'))) {
+      linksCounter.textContent = `Total Emails : ${counter}`
+    } else {
+      linksCounter.textContent = `Total Links : ${counter}`
     }
   }
 })
@@ -117,9 +117,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 let copyBtn //Declaring it outside because I am using it in copyToClipboard function
 
 function displayButtons(links) {
-  buttonsContainer.innerHTML = ''
+  innerButtons.innerHTML = ''
   getLinks.style.display = 'none'
   getEmails.style.display = 'none'
+  nameWrapper.style.display = 'none'
   //Copy to Clipboard button
   copyBtn = document.createElement('button')
   copyBtn.textContent = 'Copy to clipboard'
@@ -127,14 +128,14 @@ function displayButtons(links) {
   copyBtn.addEventListener('click', () => {
     copyToClipboard(links)
   })
-  buttonsContainer.appendChild(copyBtn)
+  innerButtons.appendChild(copyBtn)
 
   //Bookmark Button
   const bookmarkBtn = document.createElement('button')
   bookmarkBtn.textContent = "Bookmark's"
   bookmarkBtn.classList.add('bookmarkBtn')
 
-  buttonsContainer.appendChild(bookmarkBtn)
+  innerButtons.appendChild(bookmarkBtn)
 
   bookmarkBtn.addEventListener('click', () => {
     chrome.runtime.openOptionsPage()
