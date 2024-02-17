@@ -42,16 +42,17 @@ getEmails.addEventListener('click', () => {
 
 // Handle messages from the background script
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg && Array.isArray(msg)) {
+  if (msg.data && Array.isArray(msg.data)) {
     // Clear existing list items
+    const data = msg.data
 
     ol.innerHTML = ''
 
     //copying to clipboard
-    displayButtons(msg)
+    displayButtons(data)
     // Iterate over the array of links and create list items
     let counter = 0
-    msg.forEach((link) => {
+    data.forEach((link) => {
       if (link !== '') {
         let bookmarkIconFlag = true
 
@@ -106,9 +107,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     })
     if (counter === 0) {
       linksCounter.textContent = `Sorry, no data found.`
-    } else if (msg.some((item) => item.includes('@'))) {
+    } else if (msg.type === 'emails') {
       linksCounter.textContent = `Total Emails : ${counter}`
-    } else {
+    } else if (msg.type === 'links') {
       linksCounter.textContent = `Total Links : ${counter}`
     }
   }
