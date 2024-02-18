@@ -64,7 +64,12 @@ document.addEventListener('DOMContentLoaded', function () {
           let bookmarkLinkContainer = document.createElement('div')
 
           a.textContent = link
-          a.href = link
+
+          if (msg.type === 'emails') {
+            a.href = `mailto:${link}`
+          } else if (msg.type === 'links') {
+            a.href = link
+          }
           a.target = '_blank'
           a.style.color = 'black'
           a.classList.add('linksATag')

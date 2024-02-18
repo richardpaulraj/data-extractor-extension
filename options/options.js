@@ -1,6 +1,8 @@
 const savedLinks = document.getElementById('savedLinks')
 const clearAllBtn = document.querySelector('.clearAllBtn')
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 function updateBookmarkList() {
   savedLinks.innerHTML = '' // Clear the existing bookmarks list
 
@@ -25,8 +27,13 @@ function updateBookmarkList() {
         cancel.classList.add('cancelEachBookmark')
         cancel.textContent = 'x'
 
-        a.href = eachBookmark
         a.textContent = eachBookmark
+
+        if (emailRegex.test(eachBookmark)) {
+          a.href = `mailto:${eachBookmark}`
+        } else {
+          a.href = eachBookmark
+        }
 
         div.append(cancel)
         div.appendChild(a)
