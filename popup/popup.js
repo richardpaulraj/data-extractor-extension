@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const aTags = document.getElementsByTagName('a')
     for (const tag of aTags) {
-      links.push(tag.href)
+      const href = tag.href
+      if (href && !href.includes('javascript:void(0)')) {
+        //avoiding the "do nothing" link
+        links.push(href)
+      }
     }
 
     chrome.runtime.sendMessage({ links: links })
@@ -133,9 +137,14 @@ document.addEventListener('DOMContentLoaded', function () {
     copyBtn = document.createElement('button')
     copyBtn.textContent = 'Copy to clipboard'
     copyBtn.classList.add('copyBtn')
-    copyBtn.addEventListener('click', () => {
-      copyToClipboard(links)
-    })
+
+    if (links.length === 0) {
+      copyBtn.classList.add('disabledBtn')
+    } else {
+      copyBtn.addEventListener('click', () => {
+        copyToClipboard(links)
+      })
+    }
     innerButtons.appendChild(copyBtn)
 
     //Bookmark Button

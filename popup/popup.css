@@ -125,3 +125,7 @@ ol {
 .linksATag {
   padding-right: 10px;
 }
+.disabledBtn {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
